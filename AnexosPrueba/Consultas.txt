@@ -1,0 +1,76 @@
+5. (1 Pto) Listar todas las mascotas
+
+SELECT * FROM `mascota`
+
+
+6. (1 Pto) Listar las mascotas que no han sido adoptadas.
+
+SELECT * FROM `mascota` WHERE Id_propietarios IS null
+
+
+
+7. (1 Pto) Listar el número de mascotas por cada tipo de mascota.
+
+SELECT tipomascota.Descripcion, COUNT(mascota.Id_tipomascota) AS cantidad
+FROM mascota
+INNER JOIN tipomascota ON mascota.Id_tipomascota=tipomascota.Id 
+GROUP BY mascota.Id_tipomascota
+
+
+8. (1 Pto) Listar los propietarios que tengan más de una mascota.
+
+SELECT propietarios.Nombre, COUNT(mascota.Id) AS cantidad
+FROM mascota
+INNER JOIN propietarios ON mascota.Id_propietarios=propietarios.Id 
+GROUP BY mascota.Id_propietarios
+HAVING cantidad>1
+
+
+
+9. (1 Pto) Listar el número de mascotas por cada tipo de mascota y por cada propietario.
+
+SELECT tipomascota.Descripcion, propietarios.Nombre, COUNT(mascota.Id) AS cantidad
+FROM mascota
+INNER JOIN propietarios ON mascota.Id_propietarios=propietarios.Id 
+INNER JOIN tipomascota ON mascota.Id_tipomascota=tipomascota.Id
+GROUP BY mascota.Id_propietarios, mascota.Id_tipomascota
+
+
+
+10. (1 Pto) Listas los propietarios que no tienen mascotas.
+
+SELECT propietarios.Nombre, mascota.Id FROM `propietarios` 
+LEFT JOIN mascota ON mascota.Id_propietarios=propietarios.Id
+WHERE mascota.Id is null
+
+
+
+11. (1 Pto) Cree un stored procedure o procedimiento almacenado con cualquiera de las
+sentencias anteriores.
+
+CREATE PROCEDURE `MascotasPorTipoMascosta`()
+ SELECT tipomascota.Descripcion, COUNT(mascota.Id_tipomascota) AS cantidad
+ FROM mascota 
+INNER JOIN tipomascota ON mascota.Id_tipomascota=tipomascota.Id
+ GROUP BY mascota.Id_tipomascota
+
+
+12. Consulta servicios por propietario
+
+SELECT propietarios.Nombre, SUM(serviciosveterinaria.ValorServicios)
+FROM `serviciosveterinaria`
+INNER JOIN propietarios ON propietarios.Id = serviciosveterinaria.Id_propietarios
+GROUP by propietarios.Id
+
+
+13. (1 Pto) Escriba una sentencia SQL que actualice la columna “Nombre” de la tabla
+mascota, de modo que los nombres de todas las mascotas queden en mayúscula.
+
+UPDATE `mascota` SET `Nombre`= UPPER(Nombre)
+
+
+14. (1 Pto) Escriba una sentencia SQL que elimine los propietarios que no tienen mascotas.
+
+DELETE propietarios FROM `propietarios`
+LEFT JOIN mascota ON mascota.Id_propietarios=propietarios.Id
+WHERE mascota.Id is null
